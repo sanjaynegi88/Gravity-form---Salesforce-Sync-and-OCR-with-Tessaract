@@ -1,0 +1,126 @@
+jQuery(document).ready(function ($) {
+
+
+$(".button-select-form").click(function (e) {
+var formselected = $("#selected_form").val();
+
+if(formselected == "") {
+    e.preventDefault();
+    alert("Please select a form.");
+}else {
+
+
+     $.ajax({
+            type: 'POST',
+            url: sf_mapping_ajax.ajax_url,
+            data: {
+                action: 'sf_select_object',
+                formID: formselected,
+    
+            },
+            success: function (response) {
+
+//Step 2 Begins
+
+                $("#additional-fields").html(response);
+
+                $(".map_gf_fields").click(function(){
+                    var formID = $("input.gf_selected_formID").val();
+                    var sfobject = $("select[name=gf_mapping_data_sf]").val();
+                    var sfobjecttype = $("select[name=mapping_data_sf_objecttype]").val();
+                    if(sfobjecttype ==""){
+                        alert("Please Select Object Type");
+                    }
+                    if(sfobject==""){
+                        alert("Please Select Object");
+                    }
+
+                if(sfobjecttype !="" && sfobject !="") {
+
+                   // Add all Forms To the Bottom including the one adding to top
+                 $.ajax({
+                    type: 'POST',
+                    url: sf_mapping_ajax.ajax_url,
+                    data: {
+                            action: 'fetch_gformsbyid_forms',
+                            formID: formID
+                      
+                        },
+                        success: function (response) {
+                         $("#additional_forms").html(response);
+
+
+
+                         
+    $('#add_mapped_value').on('click', function () {
+        const sffield = $('select[name="mapping_data[1][sffield]"]').val();
+        const gfield = $('select[name="mapping_data_gform"]').val();
+        const form_id = $('#selected_form').val();
+        const sf_object = $('#selected_sf_object').val();
+
+        if (!sffield || !gfield || !form_id || !sf_object) {
+            alert('Please select both Salesforce and Gravity Form fields.');
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: sf_mapping_ajax.ajax_url,
+            data: {
+                action: 'add_sf_gf_mapping',
+                sffield: sffield,
+                gfield: gfield,
+                form_id: form_id,
+                sf_object: sf_object
+            },
+            success: function (response) {
+                alert(response.data.message);
+            },
+            error: function () {
+                alert('An error occurred.');
+            }
+        });
+
+
+    });       
+
+
+
+
+                        },
+                        error: function () {
+                        alert('An error occurred.');
+                        }
+                });
+                //End Ajax Call
+
+                }    
+
+
+
+                });
+
+
+            },
+            error: function () {
+                alert('An error occurred.');
+            }
+        });
+
+
+
+}   
+    
+});
+
+
+
+
+
+
+
+
+
+ // End Docunment Ready 
+
+});
